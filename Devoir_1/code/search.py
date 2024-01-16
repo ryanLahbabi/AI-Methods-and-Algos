@@ -90,26 +90,67 @@ def depthFirstSearch(problem:SearchProblem)->List[Direction]:
 
     To get started, you might want to try some of these simple commands to
     understand the search problem that is being passed in:
+    LIFO --> stack
+    """
 
     print("Start:", problem.getStartState())
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-    """
+
 
     '''
         INSÉREZ VOTRE SOLUTION À LA QUESTION 1 ICI
     '''
 
-    util.raiseNotDefined()
+    stack = util.Stack()
+    stack.push((problem.getStartState(), [], 0))
+    visited = set()
+
+    while not stack.isEmpty():
+        state, actions, cost = stack.pop()
+
+        if problem.isGoalState(state):
+            return actions
+
+        if state not in visited:
+            visited.add(state)
+
+            for nextSate, nextAction, nextCost in problem.getSuccessors(state):
+                newActions = list(actions)
+                newActions.append(nextAction)
+                stack.push((nextSate, newActions, cost + nextCost))
+
+
+
+
+
 
 
 def breadthFirstSearch(problem:SearchProblem)->List[Direction]:
     """Search the shallowest nodes in the search tree first."""
 
-
     '''
         INSÉREZ VOTRE SOLUTION À LA QUESTION 2 ICI
+            FIFO --> queue
     '''
+    queue = util.Queue()
+    queue.push((problem.getStartState(), [], 0))
+    visited = set()
+
+    while not queue.isEmpty():
+        state, actions, cost = queue.pop()
+
+        if problem.isGoalState(state):
+            return actions
+
+        if state not in visited:
+            visited.add(state)
+            for nextSate, nextAction, nextCost in problem.getSuccessors(state):
+                newActions = list(actions)
+                newActions.append(nextAction)
+                queue.push((nextSate, newActions, cost + nextCost))
+
+
 
     util.raiseNotDefined()
 
