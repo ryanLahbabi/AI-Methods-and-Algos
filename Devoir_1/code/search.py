@@ -115,15 +115,10 @@ def depthFirstSearch(problem:SearchProblem)->List[Direction]:
         if state not in visited:
             visited.add(state)
 
-            for nextSate, nextAction, nextCost in problem.getSuccessors(state):
+            for nextState, nextAction, nextCost in problem.getSuccessors(state):
                 newActions = list(actions)
                 newActions.append(nextAction)
-                stack.push((nextSate, newActions, cost + nextCost))
-
-
-
-
-
+                stack.push((nextState, newActions, cost + nextCost))
 
 
 def breadthFirstSearch(problem:SearchProblem)->List[Direction]:
@@ -145,10 +140,10 @@ def breadthFirstSearch(problem:SearchProblem)->List[Direction]:
 
         if state not in visited:
             visited.add(state)
-            for nextSate, nextAction, nextCost in problem.getSuccessors(state):
+            for nextState, nextAction, nextCost in problem.getSuccessors(state):
                 newActions = list(actions)
                 newActions.append(nextAction)
-                queue.push((nextSate, newActions, cost + nextCost))
+                queue.push((nextState, newActions, cost + nextCost))
 
 
 
@@ -161,6 +156,30 @@ def uniformCostSearch(problem:SearchProblem)->List[Direction]:
     '''
         INSÉREZ VOTRE SOLUTION À LA QUESTION 3 ICI
     '''
+
+    current_state = problem.getStartState()
+
+    # initializing a stack for the successors
+    successor_FIFO = util.PriorityQueue()
+    successor_FIFO.push((current_state, [], 0), 0)
+    visited = []
+
+    while successor_FIFO.isEmpty() == False:  # as long as the stack is not empty
+        current_state = successor_FIFO.pop()  # pop the last state of the stack
+        if current_state[0] not in visited:
+            if problem.isGoalState(current_state[0]):  # verify if this state is the goal state
+                return current_state[1]  # if yes, return the action to this state
+
+            else:  # if not,
+                successors_list = problem.getSuccessors(current_state[0])  # get the list of successors
+                for successor in successors_list:  # for each element in the successors list fetched
+
+                    if successor[0] not in visited:
+                        action = list(current_state[1])
+                        action.append(successor[1])
+                        cost = float(current_state[2] + successor[2])
+                        successor_FIFO.push((successor[0], action, cost), cost)
+                visited.append(current_state[0])
 
     util.raiseNotDefined()
 
