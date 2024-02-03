@@ -37,6 +37,7 @@ description for details.
 Good luck and happy searching!
 """
 
+from cmath import sqrt
 from game import Directions
 from game import Agent
 from game import Actions
@@ -294,7 +295,7 @@ class CornersProblem(search.SearchProblem):
         '''
             INSÉREZ VOTRE SOLUTION À LA QUESTION 5 ICI
         '''
-
+        self.initialState = (self.startingPosition, [False, False, False, False])
 
     def getStartState(self):
         """
@@ -306,6 +307,7 @@ class CornersProblem(search.SearchProblem):
             INSÉREZ VOTRE SOLUTION À LA QUESTION 5 ICI
         '''
         
+        return self.initialState
         util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -316,6 +318,16 @@ class CornersProblem(search.SearchProblem):
         '''
             INSÉREZ VOTRE SOLUTION À LA QUESTION 5 ICI
         '''
+        for i, corner in self.corners:  # Iterate through each corner stored in self.corners
+            if state[0] == corner:  # Check if the agent's current position matches this corner
+                state[1][i] = True  # Mark this corner as visited in the state's corner visitation list
+
+        isGoalState = True  # Initialize isGoalState as True, assuming all corners have been visited
+        for cornerState in state[1]:  # Iterate through the corner visitation list in the state
+            if cornerState == False:  # Check if there's any corner that hasn't been visited
+                isGoalState = False  # Set isGoalState to False if an unvisited corner is found
+
+        return isGoalState  # Return True if all corners have been visited, otherwise False
 
         util.raiseNotDefined()
 
@@ -342,10 +354,26 @@ class CornersProblem(search.SearchProblem):
             '''
                 INSÉREZ VOTRE SOLUTION À LA QUESTION 5 ICI
             '''
+            x, y = state[0]  # Extracts the current position from the state.
+            dx, dy = Actions.directionToVector(action)  # Converts an action into a movement vector.
+            nextx, nexty = int(x + dx), int(y + dy)  # Calculates the next position after applying the action.
+            hitsWall = self.walls[nextx][nexty]  # Checks if the next position is a wall.
+            
+            if hitsWall == False:  # If the next position is not a wall, proceed.
+                nextPosition = (nextx, nexty)  # Updates the position.
+                nextCornerState = [False, False, False, False]  # Initializes the corners' visited state.
+                for i, corner in enumerate(self.corners):  # Iterates through the corners.
+                    if nextPosition == corner:  # If the next position is at a corner,
+                        nextCornerState[i] = True  # mark that corner as visited.
+                    else:
+                        # Otherwise, retain the corner's visited state from the current state.
+                        nextCornerState[i] = state[1][i]
+            
+                # Adds the new state (position and corners' visited state), the action taken, and the cost to the successors list.
+                successors.append(((nextPosition, nextCornerState), action, 1))
 
-
-        self._expanded += 1 # DO NOT CHANGE
-        return successors
+        self._expanded += 1  # Do not modify this line.
+        return successors 
 
     def getCostOfActions(self, actions):
         """
@@ -379,8 +407,20 @@ def cornersHeuristic(state, problem):
     '''
         INSÉREZ VOTRE SOLUTION À LA QUESTION 6 ICI
     '''
+    h = 0  # Initialize the variable 'h' to 0. This will hold the maximum distance.
+
+    x, y = state[0]  # Unpacks the current position (x, y) from the first element of 'state'.
+
+    for i, corner in enumerate(state[1]):  # Loops through the corners' status (visited or not) in 'state[1]'.
+        if corner == False:  # Checks if the corner has not been visited.
+            # Calculates the Manhattan distance between the current position (x, y) and this corner.
+            g = abs(corners[i][1] - y) + abs(corners[i][0] - x)
+
+            if g > h:  # If this distance is greater than the current maximum stored in 'h'.
+                h = g  # Update 'h' with this greater distance.
+
+    return h  
     
-    return 0
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -478,6 +518,19 @@ def foodHeuristic(state, problem: FoodSearchProblem):
         INSÉREZ VOTRE SOLUTION À LA QUESTION 7 ICI
     '''
 
-
-    return 0
+    foodList = foodGrid.asList()  # Convert the food grid to a list of food locations.
+    
+    h = 0  # Initialize the heuristic value 'h' to zero.
+    
+    for food in foodList:  # Loop through each food item in the list.
+        if (position, food) in problem.heuristicInfo:  # Check if distance from current position to food is already calculated.
+            g = problem.heuristicInfo[(position, food)]  # Retrieve the previously calculated distance.
+        else:  # If not previously calculated, create a new search problem for current position to this food.
+            oneFoodSearch = PositionSearchProblem(problem.startingGameState, goal=food, start=position)  # Define new search problem.
+            g = len(search.breadthFirstSearch(oneFoodSearch))  # Use BFS to find shortest path to food, assign length to 'g'.
+            problem.heuristicInfo.setdefault((position, food), g)  # Store the calculated distance in heuristicInfo for future use.
+        if g > h:  # If calculated distance 'g' is greater than current max distance 'h',
+            h = g  # Update 'h' with 'g'.
+    
+    return h  # Return the maximum distance found between current position and any food item.
 

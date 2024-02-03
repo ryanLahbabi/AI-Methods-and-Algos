@@ -100,30 +100,32 @@ def depthFirstSearch(problem:SearchProblem)->List[Direction]:
         INSÉREZ VOTRE SOLUTION À LA QUESTION 1 ICI
     '''
 
-    current_state = problem.getStartState()
-
-    #initializing a stack for the successors 
-    successor_LIFO = util.Stack()
-    successor_LIFO.push((current_state,[]))
-    visited = []
-
-    while successor_LIFO.isEmpty() == False:                                    # as long as the stack is not empty
-        current_state = successor_LIFO.pop()                                    # pop the last state of the stack
-        if current_state[0] not in visited:
-            if problem.isGoalState(current_state[0]):                           # verify if this state is the goal state
-                return current_state[1]                                         # if yes, return the action to this state
-            
-            else:                                                               # if not,
-                successors_list = problem.getSuccessors(current_state[0])       # get the list of successors
-                for successor_ in successors_list:                              # for each element in the successors list fetched
-
-                    if successor_[0] not in visited:
-                        action = list(current_state[1])
-                        action.append(successor_[1])
-                        successor_LIFO.push((successor_[0],action))    
-                visited.append(current_state[0])
+    current_state = problem.getStartState()  # Get the initial state from the problem
     
+    successor_LIFO = util.Stack()  # Initialize a stack for successors
+    successor_LIFO.push((current_state, []))  # Push the initial state with an empty action list
+    visited = []  # List to keep track of visited states
+    
+    while not successor_LIFO.isEmpty():  # Loop while the stack is not empty
+        current_state = successor_LIFO.pop()  # Pop the last state from the stack
+    
+        if current_state[0] not in visited:  # Check if the state has not been visited before
+            if problem.isGoalState(current_state[0]):  # Check if the current state is the goal state
+                return current_state[1]  # Return the list of actions to reach this state
+    
+            else:  # If it's not the goal state,
+                successors_list = problem.getSuccessors(current_state[0])  # Get the list of successor states
+                for successor_ in successors_list:  # For each successor state and action pair
+                
+                    if successor_[0] not in visited:  # Check if the successor state has not been visited
+                        action = list(current_state[1])  # Create a new action list by copying the previous actions
+                        action.append(successor_[1])  # Add the action to the list
+                        successor_LIFO.push((successor_[0], action))  # Push the successor state with the updated action list
+    
+                visited.append(current_state[0])  # Mark the current state as visited
+
     util.raiseNotDefined()
+
 
 
 def breadthFirstSearch(problem:SearchProblem)->List[Direction]:
@@ -141,15 +143,15 @@ def breadthFirstSearch(problem:SearchProblem)->List[Direction]:
     successor_FIFO.push((current_state,[]))
     visited = []
 
-    while successor_FIFO.isEmpty() == False:                                    # as long as the stack is not empty
-        current_state = successor_FIFO.pop()                                    # pop the last state of the stack
+    while successor_FIFO.isEmpty() == False:                                    
+        current_state = successor_FIFO.pop()                                    
         if current_state[0] not in visited:
-            if problem.isGoalState(current_state[0]):                           # verify if this state is the goal state
-                return current_state[1]                                         # if yes, return the action to this state
+            if problem.isGoalState(current_state[0]):                           
+                return current_state[1]                                         
             
-            else:                                                               # if not,
-                successors_list = problem.getSuccessors(current_state[0])       # get the list of successors
-                for successor_ in successors_list:                              # for each element in the successors list fetched
+            else:                                                               
+                successors_list = problem.getSuccessors(current_state[0])       
+                for successor_ in successors_list:                              
 
                     if successor_[0] not in visited:
                         action = list(current_state[1])
@@ -173,15 +175,15 @@ def uniformCostSearch(problem:SearchProblem)->List[Direction]:
     successor_FIFO.push((current_state,[],0),0)
     visited = []
 
-    while successor_FIFO.isEmpty() == False:                                    # as long as the stack is not empty
-        current_state = successor_FIFO.pop()                                    # pop the last state of the stack
+    while successor_FIFO.isEmpty() == False:                                    
+        current_state = successor_FIFO.pop()                                    
         if current_state[0] not in visited:
-            if problem.isGoalState(current_state[0]):                           # verify if this state is the goal state
-                return current_state[1]                                         # if yes, return the action to this state
+            if problem.isGoalState(current_state[0]):                           
+                return current_state[1]                                         
             
-            else:                                                               # if not,
-                successors_list = problem.getSuccessors(current_state[0])       # get the list of successors
-                for successor_ in successors_list:                              # for each element in the successors list fetched
+            else:                                                             
+                successors_list = problem.getSuccessors(current_state[0])       
+                for successor_ in successors_list:                           
 
                     if successor_[0] not in visited:
                         action = list(current_state[1])
@@ -213,15 +215,15 @@ def aStarSearch(problem:SearchProblem, heuristic=nullHeuristic)->List[Direction]
     successor_FIFO.push((current_state,[],0),h)
     visited = []
 
-    while successor_FIFO.isEmpty() == False:                                    # as long as the stack is not empty
-        current_state = successor_FIFO.pop()                                    # pop the last state of the stack
+    while successor_FIFO.isEmpty() == False:                                    
+        current_state = successor_FIFO.pop()                                    
         if current_state[0] not in visited:
-            if problem.isGoalState(current_state[0]):                           # verify if this state is the goal state
-                return current_state[1]                                         # if yes, return the action to this state
+            if problem.isGoalState(current_state[0]):                          
+                return current_state[1]                                         
             
-            else:                                                               # if not,
-                successors_list = problem.getSuccessors(current_state[0])       # get the list of successors
-                for successor_ in successors_list:                              # for each element in the successors list fetched
+            else:                                                              
+                successors_list = problem.getSuccessors(current_state[0])      
+                for successor_ in successors_list:                             
 
                     if successor_[0] not in visited:
                         action = list(current_state[1])
