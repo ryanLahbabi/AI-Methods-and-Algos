@@ -28,3 +28,8 @@ Other Course Teams' Agents: Mixed results improved after adjusting heuristic wei
 
 ## Discussion ##
 Our agent's strengths include effective piece capturing and central positioning strategies, as well as formations with adjacent pieces for offensive and defensive benefits. However, limitations include a static heuristic that doesn't adapt to dynamic game changes, lack of learning from past experiences, and sensitivity to heuristic weightings. Future improvements could involve adaptive heuristics and machine learning techniques.
+
+## Authors
+
+- RYAN LAHBABI
+- Mark Ibrahim
