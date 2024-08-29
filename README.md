@@ -32,4 +32,4 @@ Our agent's strengths include effective piece capturing and central positioning 
 ## Authors
 
 - RYAN LAHBABI
-- Mark Ibrahim
+- MARK IBRAHIM
